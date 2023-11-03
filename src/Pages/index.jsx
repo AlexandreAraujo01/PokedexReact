@@ -10,15 +10,17 @@ import page from '../js/incrimentPage'
 import sla from '../images/scenario.jpeg'
 import pokeball from '../images/pokeball.jpg'
 import { Link } from 'react-router-dom';
+import { usePokedex } from "../context/Context";
 
 
 const Index = (props) => {
-    const pokemonsNumber = 40;
+    const pokemonsNumber = 20;
     const [pokemonsList, setPokemonsList] = useState([])
-    const [page_url, setPageUrl] = useState(`https://pokeapi.co/api/v2/pokemon?offset=0&limit=${pokemonsNumber}`)
+    const [page_url, setPageUrl] = useState(`https://pokeapi.co/api/v2/pokemon?limit=20&offset=0`)
     const [initial_index,setInitiaLIndex] = useState(0)
     const [intialPage,setInitiaPage] = useState(0)
     const listItems = [];
+    const {pokemonData,setPokemonData} = usePokedex()
 
     let navigate = useNavigate(); 
     
@@ -43,11 +45,16 @@ const Index = (props) => {
             setInitiaPage(integer)
             let v = pokemonsNumber * integer
             setInitiaLIndex(v)
-            console.log('ue', integer)
          }
          
 
     }
+
+    const handleButtonClick = (index,pokemonData) => {
+        // função que realiza a troca de pagina para o pokemon escolhido
+        routeChange(initial_index + index);
+        setPokemonData(pokemonData);
+      };
 
     async function Teste(name){
         const res = await axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`)
@@ -113,19 +120,19 @@ const Index = (props) => {
       {pokemonsList.map((pokemon, index) => (
         
         // map to create all pokemon cards in the page
-        <div key={index} className="card mt-3 d-flex justify-content-center align-items-center">
+        <div key={index} className="card mt-3 d-flex justify-content-center align-items-center" style={{backgroundColor: 'rgba(245, 245, 245, 0.5)'}}>
             <div className="card-header container-fluid text-center">
                 <h5 className="card-title text-center " style={{textTransform: 'capitalize'}}>{pokemon.name}</h5>
                 {/* <div>{Teste(1)}</div> */}
             </div>
-            <div className="card-body" >
+            <div className="card-body">
             {/* <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${initial_index+index+1}.png`} class="card-img-bottom" alt="..."></img> */}
             <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${initial_index+index+1}.png`} class="card-img-bottom img-fluid" alt="..."></img>
             {/* <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${initial_index+index+1}.png`} class="card-img-bottom" alt="..."></img> */}
             {/* <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> */}
             
             <div className="card-text text-center">
-            <a className="btn btn-primary" onClick={() => routeChange(initial_index+index)}>Check Status!</a>
+            <a className="btn btn-primary" onClick={() => {handleButtonClick(initial_index+index, pokemon)}}>Check Status!</a>
             </div>
             
         </div>

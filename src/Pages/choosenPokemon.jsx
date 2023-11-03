@@ -5,6 +5,8 @@ import axios from "axios";
 import { useEffect,useState } from "react";
 import colorType from "../js/colorType";
 import sla from '../images/scenario.jpeg'
+import getEvolutions from "../js/evolutions";
+import { usePokedex } from "../context/Context";
 
 import {
     BrowserRouter as Router,
@@ -19,14 +21,29 @@ import {
 const ChoosenPokemon = (props) => {
     let { id } = useParams();
     id = parseInt(id)
+    console.log(id,'idddddddddddddd')
     const [status,setStatus] = useState([])
     const [types,setTypes] = useState([])
+    const {pokemonData,setPokemonData} = usePokedex()
+    const [evol,setEvol] = useState([])
+    const [pokemonName, setPokemonName] = useState("")
+    
 
     async function Teste() {
         // função que faz a requisição para pegar os dados dos pokemons.
         const res = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id + 1}`)
         console.log(res,'somebody?')
         return res
+    }
+
+    async function Evolutions(url){
+        const res = await axios.get(url)
+        return getEvolutions(res.data)
+    }
+
+    async function getChain(){
+        const res = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${id + 1}/`)
+        return res.data.evolution_chain.url
     }
     // async function GetStatus(id){
     //     let res = await Teste(id)
@@ -36,9 +53,10 @@ const ChoosenPokemon = (props) => {
 
     useEffect(() => {
         // useEffect que carrega a pagina a primeira vez ou quando é feito o refresh
-        const getStatus = async (id) => {
+        const getStatus = async () => {
             try{
-                const PokemonsStatus = await Teste(id)
+                const PokemonsStatus = await Teste()
+                setPokemonName(PokemonsStatus.data.name)
                 setStatus(PokemonsStatus.data.stats)
                 setTypes(PokemonsStatus.data.types)
             }
@@ -47,33 +65,55 @@ const ChoosenPokemon = (props) => {
             }
         }
 
+        const getEvolutions = async () => {
+            try {
+                let url_chain = await getChain()
+                const evolutions = await Evolutions(url_chain)
+                console.log(evolutions,'evssss')
+                setEvol(evolutions)
+                // let x = getEvolutions(evolutions.data)
+                // console.log(x,'allalalalal')
+            }
+            catch(error){
+                console.log('error aqui', error)
+            }
+        }
+
         getStatus()
+        getEvolutions()
     },[])
 
+    // useEffect(() => {
+    //     let x = getEvolutions(evol)
+    //     console.log(evol,'xoxoxo')
+    //     console.log(x,'xaxaxa')
+    // },[evol])
+
     return (
-        <>
-        <NavBar/>
-        {console.log(sla,'aaaaaa')}
-        <div className="bg-image container-fluid overflow-y-visible background-image" style={{backgroundImage: `url('${sla}')`,height: '85vh'}}>
-        <div className="container-fluid overflow-auto mt-2" style={{position: "relative"}}>
-             
-             <div className="row d-flex justify-content-evenly">
-             <div className="col-sm-8">
-                <div className="container-flud d-flex flex-column justify-content-center align-items-center p-0 border mt-1 mb-2" style={{backgroundColor: 'white'}}>
+
+        <>  
+            <NavBar/>
+            <div className="container-fluid">
+                <div className="d-flex-wrap justify-content-center overflow-auto background-image" style={{minHeight: '87vh', backgroundImage: `url(${sla})`}}>
+                <div className="row m-0 p-0 d-flex justify-content-evenly">
+             <div className="col-sm-12 col-md-6">
+                <div className="container-flud d-flex flex-column justify-content-center align-items-center p-0 border mt-1 mb-2 rounded" style={{backgroundColor: 'rgba(245, 245, 245, 0.5)'}}>
+                    <h5>{pokemonName}</h5>
+                    {console.log(pokemonData,'pokemon data')}
                     <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id + 1}.png`} alt="pokemon image" className="w-25"></img>
                     <div className="d-flex justify-content-evenly">
                     {types.map((type,index) => (
                         <>
-                            <div className="rounded-2  d-flex justify-content-center p-1 m-4" style={{width: '4.0rem', backgroundColor: `${colorType(type.type.name)}`}}>{type.type.name}</div>
+                            <div className="rounded-2  d-flex justify-content-center p-1 m-4" style={{width: '4.0rem', backgroundColor: `${colorType(type.type.name)}`, color: 'white'}}>{type.type.name}</div>
                         </>
                     ))}
                     </div>
                 </div>
              </div>
              <div className="row">             
-                <div className="col-sm-12 col-md-12 d-flex">
-                    <div className="d-flex flex-column w-100 border-top border-end border-start border-bottom">
-                            <h6 className="align-self-center">STATUS</h6>
+                <div className="col-sm-12 col-md-6 d-flex">
+                    <div className="d-flex flex-column w-100 border-top border-end border-start border-bottom rounded">
+                            <h5 className="align-self-center">Status</h5>
                             {status.map((stat,index) => (
                                 <>
                                     {/* {console.log(stat)} */}
@@ -86,19 +126,26 @@ const ChoosenPokemon = (props) => {
                     </div>
                 </div>
                 
-                <div className="col-sm-12">
-                        <h1>oi</h1>
+                <div className="col-sm-12 col-md-6">
+                    <div className="d-flex flex-column justify-content-center  w-100 border-top border-end border-start border-bottom rounded">
+                        <h5 className="align-self-center">Evolution Chain</h5>
+                        <div className="d-flex w-100 justify-content-evenly">
+                            {evol.map((evol) => (
+                                    <>
+                                    <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${evol.numero}.png`} alt="pokemon image" className="w-25"></img>
+                                    <span className="align-self-center">UIUI</span>
+                                    </>
+                            ))}
+                        </div>
+                    </div>
                 </div>
-             </div>  
+             </div>
             </div>
-            
-
-        </div>
-       
-        </div>
-        <Footer/>
+                </div>
+            </div>
+            <Footer/>
         </>
-    )
+        )
 }
 
 export default ChoosenPokemon
