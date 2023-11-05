@@ -19,20 +19,25 @@ import {
 
 
 const ChoosenPokemon = (props) => {
-    let { id } = useParams();
-    id = parseInt(id)
-    console.log(id,'idddddddddddddd')
+    const { id } = useParams();
+    // id = parseInt(id)
     const [status,setStatus] = useState([])
     const [types,setTypes] = useState([])
-    const {pokemonData,setPokemonData} = usePokedex()
+    const {pokemonData,setPokemonData,pokemonId,setPokemonId,pokemonNameChoosen, setPokemonNameChoosen} = usePokedex()
     const [evol,setEvol] = useState([])
     const [pokemonName, setPokemonName] = useState("")
+    const [idteste,setIdTeste] = useState(0)
     
 
     async function Teste() {
         // função que faz a requisição para pegar os dados dos pokemons.
-        const res = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id + 1}`)
+        const res = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`)
+        console.log(id,'choosen one name')
         console.log(res,'somebody?')
+        console.log(res.data.id,' id no some')
+        setIdTeste(res.data.id -1)
+
+        console.log(id)
         return res
     }
 
@@ -42,7 +47,8 @@ const ChoosenPokemon = (props) => {
     }
 
     async function getChain(){
-        const res = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${id + 1}/`)
+        console.log(pokemonId,'chainnnnnnn id')
+        const res = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${pokemonId + 1}/`)
         return res.data.evolution_chain.url
     }
     // async function GetStatus(id){
@@ -56,9 +62,17 @@ const ChoosenPokemon = (props) => {
         const getStatus = async () => {
             try{
                 const PokemonsStatus = await Teste()
+                
+                setIdTeste(PokemonsStatus.data.id -1)
                 setPokemonName(PokemonsStatus.data.name)
                 setStatus(PokemonsStatus.data.stats)
                 setTypes(PokemonsStatus.data.types)
+
+                console.log(PokemonsStatus.data.id -1)
+                console.log(idteste,'idteste')
+                
+                
+                
             }
             catch(error){
                 console.log('error')
@@ -79,9 +93,29 @@ const ChoosenPokemon = (props) => {
             }
         }
 
-        getStatus()
         getEvolutions()
+        getStatus()
+        
     },[])
+
+    useEffect(() => {
+
+        const getEvolutions = async () => {
+            try {
+                let url_chain = await getChain()
+                const evolutions = await Evolutions(url_chain)
+                console.log(evolutions,'evssss 2222')
+                setEvol(evolutions)
+                // let x = getEvolutions(evolutions.data)
+                // console.log(x,'allalalalal')
+            }
+            catch(error){
+                console.log('error aqui', error)
+            }
+        }
+
+        getEvolutions()
+    },[idteste])
 
     // useEffect(() => {
     //     let x = getEvolutions(evol)
@@ -93,6 +127,7 @@ const ChoosenPokemon = (props) => {
 
         <>  
             <NavBar/>
+            {console.log(id,'uuuuu')}
             <div className="container-fluid">
                 <div className="d-flex-wrap justify-content-center overflow-auto background-image" style={{minHeight: '87vh', backgroundImage: `url(${sla})`}}>
                 <div className="row m-0 p-0 d-flex justify-content-evenly">
@@ -100,7 +135,7 @@ const ChoosenPokemon = (props) => {
                 <div className="container-flud d-flex flex-column justify-content-center align-items-center p-0 border mt-1 mb-2 rounded" style={{backgroundColor: 'rgba(245, 245, 245, 0.5)'}}>
                     <h5>{pokemonName}</h5>
                     {console.log(pokemonData,'pokemon data')}
-                    <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id + 1}.png`} alt="pokemon image" className="w-25"></img>
+                    <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemonId + 1}.png`} alt="pokemon image" className="w-25"></img>
                     <div className="d-flex justify-content-evenly">
                     {types.map((type,index) => (
                         <>
@@ -131,10 +166,10 @@ const ChoosenPokemon = (props) => {
                         <h5 className="align-self-center">Evolution Chain</h5>
                         <div className="d-flex w-100 justify-content-evenly">
                             {evol.map((evol) => (
-                                    <>
-                                    <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${evol.numero}.png`} alt="pokemon image" className="w-25"></img>
-                                    <span className="align-self-center">UIUI</span>
-                                    </>
+                                    <div className="d-flex btn flex-column p-2 m-3 justify-content-center align-items-center" style={{backgroundColor: 'rgba(245, 245, 245, 0.5)'}}>
+                                        <h5>{evol.name}</h5>
+                                        <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${evol.numero}.png`} alt="pokemon image" className="w-50"></img>
+                                    </div>
                             ))}
                         </div>
                     </div>

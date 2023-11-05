@@ -6,8 +6,10 @@ export const PokedexProvider = ({children}) => {
 
    
     const [pokemonData,setPokemonData] = useState("")
+    const [pokemonId,setPokemonId] = useState(0)
+    const [pokemonNameChoosen, setPokemonNameChoosen] = useState("")
     return (
-        <PokedexContext.Provider value={{pokemonData,setPokemonData}}>
+        <PokedexContext.Provider value={{pokemonData,setPokemonData,pokemonId,setPokemonId,pokemonNameChoosen, setPokemonNameChoosen}}>
             {children}
         </PokedexContext.Provider>
     )
