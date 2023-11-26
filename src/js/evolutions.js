@@ -1,4 +1,4 @@
-function getEvolutions(data) {
+function getEvolutions(data,pokemonName) {
     const array = [];
     let pokemon = data?.chain?.evolves_to;
     
@@ -13,7 +13,9 @@ function getEvolutions(data) {
         const url = pokemon[0]?.species.url
         const partesDaURL = url.split('/');
         const numero = partesDaURL[partesDaURL.length - 2];
-        array.push({name: pName, numero: numero});
+        if(pName !== pokemonName){
+          array.push({name: pName, numero: numero});
+        }
         pokemon = pokemon[0]?.evolves_to;
         
         

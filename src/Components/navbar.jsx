@@ -5,8 +5,10 @@ import reactlogo from '../images/react.png'
 import { Link } from 'react-router-dom';
 import '../index.css';
 import { useNavigate } from "react-router-dom";
+import { usePokedex } from "../context/Context";
 
 const NavBar = (props) => {
+    const {routeKey, setRouteKey,gameStyle, setGameStyle} = usePokedex()
     const [searchPokemon, setSearchPokemon] = useState(""); 
 
     // navegador de paginas
@@ -18,7 +20,9 @@ const NavBar = (props) => {
     console.log(id, 'id escolhidooooo')
     // setPokemonId(id)
     console.log(`/pokemon/${id}`,'navigateeeee')
-    let path = `/pokemon/${id}`; 
+    let path = `/pokemon/${id}`;
+
+    setRouteKey(routeKey + 1)
     navigate(path);
   }
 
@@ -26,7 +30,7 @@ const NavBar = (props) => {
         console.log("Conteúdo do input:", searchPokemon);
         routeChange(searchPokemon)
 
-        // Faça o que você quiser com o conteúdo do input aqui
+        
     };
 
     return (
@@ -36,6 +40,10 @@ const NavBar = (props) => {
                     <img src={reactlogo} style={{animation: 'rotation 2.8s infinite linear'}} alt="Logo" width="35" height="35" className="d-inline-block align-text-top" />
                     <span>Pokedex React</span>
                 </Link>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onChange={() => {setGameStyle(!gameStyle)}}></input>
+                    <h6 class="form-check-label" for="flexSwitchCheckDefault">Game Style!</h6>
+                </div>
                 <div className="d-flex">
                     <input
                         className="form-control me-2"
