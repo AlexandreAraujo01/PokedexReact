@@ -22,7 +22,7 @@ const Index = (props) => {
     const [initial_index,setInitiaLIndex] = useState(0)
     const [intialPage,setInitiaPage] = useState(0)
     const [pageNumber, setPageNumber] = useState(1)
-    const [pagesNumber,setPagesNumber] = useState([1,2,3])
+    const [pagesNumber,setPagesNumber] = useState([0,1,2])
     const listItems = [];
     const {pokemonData,setPokemonData,pokemonId,setPokemonId,pokemonNameChoosen, setPokemonNameChoosen,gameStyle, setGameStyle} = usePokedex()
     
@@ -31,11 +31,18 @@ const Index = (props) => {
   
   const pages = (number) => {
     let list = []
-    for(let i = 0; i < 3; i++){
-      list.push(number + i)
+    if(number >= 0){
+      for(let i = 0; i < 3; i++){
+        list.push(number + i)
+  
+      }
     }
+    else {
+      list = [0,1,2]
+    }
+    
     let maiorValor = Math.max(...list)
-    console.log(maiorValor,'aaaa maior')
+    // console.log(maiorValor,'aaaa maior')
     list.push(maiorValor+1)
     let menorValor = Math.min(...list)
     list.unshift(menorValor-1)
@@ -75,7 +82,7 @@ const Index = (props) => {
             setInitiaPage(integer)
             let v = pokemonsNumber * integer
             setInitiaLIndex(v)
-            console.log(integer,'teste')
+            // console.log(integer,'teste')
             setPageNumber(integer)
          }
          
@@ -202,11 +209,16 @@ const Index = (props) => {
                 </li>
                 )
               }
+              else if(number -1 >= 0){
                 return (
+                  
                   <li key={number} className="page-item">
                     <a className="page-link" onClick={() => changePage(number - 1)}>{number-1}</a>
                   </li>
                 );
+                
+              }
+                
               })
               
               
