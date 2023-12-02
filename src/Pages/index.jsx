@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import { usePokedex } from "../context/Context";
 import PokemonUrl from '../js/pokemonImgUrl'
 import '../style.css'
+import SubHeader from "../Components/sub-header/sub-header";
 
 
 const Index = (props) => {
@@ -158,8 +159,9 @@ const Index = (props) => {
     return (
         <>
         <NavBar /> 
-        <div className="container-fluid overflow-y-visible">
-      <div className="d-flex-wrap justify-content-center row row-cols-2  row-cols-sm-2 row-cols-md-4 row-cols-xl-6 overflow-auto background-image" style={{gap: '0.8rem',maxHeight: '87vh', backgroundImage: `url(${sla})`}}>
+        {/* <SubHeader/> */}
+        <div className="container-fluid overflow-y-visible p-0">
+      <div className="d-flex-wrap justify-content-center row row-cols-2  row-cols-sm-2 row-cols-md-4 row-cols-xl-6 overflow-auto background-image p-0" style={{gap: '0.8rem',maxHeight: '87vh', backgroundImage: `url(${sla})`}}>
       
       {pokemonsList.map((pokemon, index) => (
         
