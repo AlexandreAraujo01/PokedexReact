@@ -1,0 +1,24 @@
+.img-responsive-tk {
+    background-color: transparent;
+  }
+
+.btn-small {
+    color: white;
+}
+  
+  @media only screen and (min-width: 992px) {
+    .img-responsive-tk {
+      width: 200px; /* A imagem ocupará 100% da largura do contêiner pai em telas grandes */
+      height: 200px;/* Adicione mais estilos conforme necessário para ajustar o layout em telas grandes */
+    }
+
+    
+    }
+
+    @media only screen and (max-width: 375px) {
+        .btn-small {
+            
+            font-size: small;
+        }
+        
+      }

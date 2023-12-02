@@ -10,21 +10,60 @@ import page from '../js/incrimentPage'
 import sla from '../images/scenario.jpeg'
 import pokeball from '../images/pokeball.jpg'
 import { Link } from 'react-router-dom';
+import { usePokedex } from "../context/Context";
+import PokemonUrl from '../js/pokemonImgUrl'
+import '../style.css'
 
 
 const Index = (props) => {
-    const pokemonsNumber = 40;
+    const pokemonsNumber = 20;
     const [pokemonsList, setPokemonsList] = useState([])
-    const [page_url, setPageUrl] = useState(`https://pokeapi.co/api/v2/pokemon?offset=0&limit=${pokemonsNumber}`)
+    const [page_url, setPageUrl] = useState(`https://pokeapi.co/api/v2/pokemon?limit=20&offset=0`)
     const [initial_index,setInitiaLIndex] = useState(0)
     const [intialPage,setInitiaPage] = useState(0)
+    const [pageNumber, setPageNumber] = useState(1)
+    const [pagesNumber,setPagesNumber] = useState([0,1,2])
     const listItems = [];
+    const {pokemonData,setPokemonData,pokemonId,setPokemonId,pokemonNameChoosen, setPokemonNameChoosen,gameStyle, setGameStyle} = usePokedex()
+    
 
     let navigate = useNavigate(); 
+  
+  const pages = (number) => {
+    let list = []
+    if(number >= 0){
+      for(let i = 0; i < 3; i++){
+        list.push(number + i)
+  
+      }
+    }
+    else {
+      list = [0,1,2]
+    }
     
+    let maiorValor = Math.max(...list)
+    // console.log(maiorValor,'aaaa maior')
+    list.push(maiorValor+1)
+    let menorValor = Math.min(...list)
+    list.unshift(menorValor-1)
+
+              
+
+    return list
+
+  }
+
+  useEffect(() => {
+    let list = pages(pageNumber)
+    setPagesNumber(list)
+    
+  },[pageNumber])
     
   const routeChange = (id) =>{ 
     // função que redireciona para a pagina do pokemon escolhido
+    console.log(id, 'id escolhidooooo')
+    // setPokemonId(id)
+    console.log(`/pokemon/${id}`,'navigateeeee')
     let path = `/pokemon/${id}`; 
     navigate(path);
   }
@@ -43,23 +82,32 @@ const Index = (props) => {
             setInitiaPage(integer)
             let v = pokemonsNumber * integer
             setInitiaLIndex(v)
-            console.log('ue', integer)
+            // console.log(integer,'teste')
+            setPageNumber(integer)
          }
          
 
     }
 
-    async function Teste(name){
-        const res = await axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`)
-        console.log(res,'ZIMBABUE')
-    }
-    
+    const handleButtonClick = (index,pokemonData,PokemonName) => {
+        // função que realiza a troca de pagina para o pokemon escolhido
+        console.log(PokemonName,'handleButtonClick')
+        setPokemonNameChoosen(PokemonName)
+        setPokemonId(index)
+        routeChange(PokemonName);
+        setPokemonData(pokemonData);
+      };
+
+   
 
     useEffect(() => {
+
+      
         // useEffect que carrega a pagina a primeira vez ou quando é feito o refresh
         const loadPokemons = async () => {
             try{
                 const PokemonsList = await getPokemons()
+                console.log(PokemonsList.data.results, 'resultados')
                 setPokemonsList(PokemonsList.data.results)
             }
             catch(error){
@@ -68,6 +116,9 @@ const Index = (props) => {
         }
 
         loadPokemons()
+
+        
+
     },[])
 
     useEffect(() => {
@@ -113,19 +164,25 @@ const Index = (props) => {
       {pokemonsList.map((pokemon, index) => (
         
         // map to create all pokemon cards in the page
-        <div key={index} className="card mt-3 d-flex justify-content-center align-items-center">
-            <div className="card-header container-fluid text-center">
-                <h5 className="card-title text-center " style={{textTransform: 'capitalize'}}>{pokemon.name}</h5>
-                {/* <div>{Teste(1)}</div> */}
+        <div key={index} className="card mt-3 d-flex justify-content-center align-items-center" style={{backgroundColor: 'rgba(245, 245, 245, 0.5)'}}>
+            <div className="container-fluid text-center">
+              <h6 className="align-self-end">Pokedex Number: #{initial_index+index}</h6>
+                <h5 className="card-title text-center " style={{textTransform: 'capitalize'}}>{pokemon?.name}</h5>
             </div>
-            <div className="card-body" >
-            {/* <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${initial_index+index+1}.png`} class="card-img-bottom" alt="..."></img> */}
-            <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${initial_index+index+1}.png`} class="card-img-bottom img-fluid" alt="..."></img>
-            {/* <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${initial_index+index+1}.png`} class="card-img-bottom" alt="..."></img> */}
-            {/* <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> */}
+            
+            <div className="card-body">
+            
+            {
+              
+              <img src={PokemonUrl(gameStyle,initial_index+index+1)} className="card-img-bottom w-100 h-75 img-fluid" alt="..."></img>
+              
+            }
+            
+            
+            
             
             <div className="card-text text-center">
-            <a className="btn btn-primary" onClick={() => routeChange(initial_index+index)}>Check Status!</a>
+            <a className="btn btn-primary btn-small" onClick={() => {handleButtonClick(initial_index+index, pokemon, pokemon?.name)}}>Check Status!</a>
             </div>
             
         </div>
@@ -137,7 +194,35 @@ const Index = (props) => {
 
       <div className="container-fluid d-flex  justify-content-center w-100">
             <ul className="pagination justify-content-center">
-                {listItems}
+            {pagesNumber.map((number, index) => {
+              if(index == 0){
+                return (
+                  <li key={number} className="page-item">
+                    <a className="page-link" onClick={() => changePage(number - 1)}>Previous</a>
+                  </li>
+                );
+              }
+              else if(index === pagesNumber.length - 1){
+                return (
+                  <li key={number} className="page-item">
+                  <a className="page-link" onClick={() => changePage(number - 1)}>Next</a>
+                </li>
+                )
+              }
+              else if(number -1 >= 0){
+                return (
+                  
+                  <li key={number} className="page-item">
+                    <a className="page-link" onClick={() => changePage(number - 1)}>{number-1}</a>
+                  </li>
+                );
+                
+              }
+                
+              })
+              
+              
+              }
             </ul>
     </div>
     </div>
