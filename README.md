@@ -19,3 +19,19 @@
 <p align="center">Hooks Utilizados: useState, useEffect, useContext, </p>
 
 ## images 
+<p align="center">
+  <img src="./src/images/github/telaInicial.png" alt="tela inicial desktop">
+</p>
+
+<p align="center">
+  <img src="./src/images/github/telaInicialMobile.png" alt="tela inicial mobile">
+</p>
+
+<p align="center">
+  <img src="./src/images/github/choosenPage.png" alt="pokemon escolhido desktop">
+</p>
+
+
+<p align="center">
+  <img src="./src/images/github/choosenPageMobile.png" alt="pokemon escolhido mobile">
+</p>
