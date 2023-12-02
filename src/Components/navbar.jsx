@@ -40,7 +40,7 @@ const NavBar = (props) => {
                     <img src={reactlogo} style={{animation: 'rotation 2.8s infinite linear'}} alt="Logo" width="35" height="35" className="d-inline-block align-text-top" />
                     <span>Pokedex React</span>
                 </Link>
-                <div class="form-check form-switch">
+                <div class="form-check form-switch me-2">
                     <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onChange={() => {setGameStyle(!gameStyle)}}></input>
                     <h6 class="form-check-label" for="flexSwitchCheckDefault">Game Style!</h6>
                 </div>

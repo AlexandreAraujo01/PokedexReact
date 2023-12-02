@@ -14,7 +14,6 @@ const Footer = (props) => {
       Created by Alexandre Araujo
     </span>
     <span>
-      #SavePalestine
     </span>
   </div>
 </nav>

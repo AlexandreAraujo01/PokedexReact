@@ -111,7 +111,7 @@ const ChoosenPokemon = (props) => {
     },[])
 
     useEffect(() => {
-        console.log(routeKey,'xiiiiiii')
+        // console.log(routeKey,'xiiiiiii')
         const getStatus = async () => {
             try{
                 const PokemonsStatus = await Teste()
@@ -191,7 +191,7 @@ const ChoosenPokemon = (props) => {
                     </div>
                 </div>
              </div>
-             <div className="row">             
+             <div className="row mb-1">             
                 <div className="col-sm-12 col-md-6 d-flex">
                     <div className="d-flex flex-column w-100 border-top border-end border-start border-bottom rounded">
                             <h5 className="align-self-center">Status</h5>
